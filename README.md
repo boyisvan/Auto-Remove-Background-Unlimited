@@ -238,16 +238,21 @@ background-remover/
 - **Touch Support**: Hỗ trợ thiết bị cảm ứng
 
 ## Demo
+
 **Giao diện trang chủ**
+
 <img width="1115" height="915" alt="image" src="https://github.com/user-attachments/assets/44480c94-06ce-44e6-9472-b3842a829f82" />
 
 **Xử lý xóa ảnh**
+
 <img width="746" height="877" alt="image" src="https://github.com/user-attachments/assets/a56a9143-2167-4d69-8ed1-c1181cd47386" />
 
 **Quản lý thêm sửa xóa ảnh nền**
+
 <img width="941" height="565" alt="image" src="https://github.com/user-attachments/assets/0ba2d7e3-281a-42d9-b9c0-daecc88ff2bb" />
 
 **Upload xử lý hàng loạt bằng csv**
+
 <img width="1919" height="711" alt="image" src="https://github.com/user-attachments/assets/ba134e98-7b19-4806-be7f-27475e9f8937" />
 
 ## Deployment
