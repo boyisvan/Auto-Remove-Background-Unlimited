@@ -237,6 +237,11 @@ background-remover/
 - **Keyboard Shortcuts**: Enter để xử lý, Esc để reset
 - **Touch Support**: Hỗ trợ thiết bị cảm ứng
 
+## Demo
+**Giao diện trang chủ**
+<img width="1115" height="915" alt="image" src="https://github.com/user-attachments/assets/44480c94-06ce-44e6-9472-b3842a829f82" />
+
+
 ## Deployment
 
 ### Heroku
