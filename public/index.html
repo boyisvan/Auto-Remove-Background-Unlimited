@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Remover - Xóa Background & Upload DigitalOcean</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                
+                <h1>Background Remover</h1>
+            </div>
+            <p class="subtitle" id="typewriterSubtitle"></p>
+            
+        </header>
+
+        <main class="main-content">
+            <div class="grid-container">
+                <!-- KHỐI 1: UPLOAD FILE -->
+                <div class="upload-section">
+                    <h3 class="section-title">Upload ảnh từ máy</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h4>Kéo thả ảnh vào đây</h4>
+                            <p>hoặc click để chọn file</p>
+                            <span class="file-types">Hỗ trợ: JPG, PNG, WEBP (tối đa 10MB)</span>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-preview" id="uploadPreview" style="display: none;">
+                        <div class="preview-header">
+                            <h4>Ảnh đã chọn:</h4>
+                            <button class="btn-remove" id="btnRemove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="preview-image">
+                            <img id="previewImg" alt="Preview">
+                        </div>
+                        <div class="preview-info">
+                            <span id="fileName"></span>
+                            <span id="fileSize"></span>
+                        </div>
+                        <!-- Background Selection -->
+                        <div class="background-selection" id="backgroundSelection">
+                            <h4>Chọn ảnh nền:</h4>
+                            <div class="background-options" id="backgroundOptions">
+                                <div class="background-option active" data-background="none">
+                                    <div class="bg-preview transparent">
+                                        <i class="fas fa-ban"></i>
+                                    </div>
+                                    <span>Không nền</span>
+                                </div>
+                                <!-- Background options will be loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <button class="btn-process" id="btnProcess">
+                            
+                            Xóa Watermark
+                        </button>
+                    </div>
+
+                    <div class="progress-section" id="progressSection" style="display: none;">
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span id="progressText">Đang xử lý...</span>
+                                <span id="progressPercent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-section" id="resultSection" style="display: none;">
+                        <div class="result-header">
+                            <h4>Xử lý thành công!</h4>
+                        </div>
+                        <div class="result-content">
+                            <div class="result-image">
+                                <img id="resultImg" alt="Kết quả">
+                            </div>
+                            <div class="result-actions">
+                                <a href="#" id="btnDownload" class="btn-download" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Xem ảnh
+                                </a>
+                                <button class="btn-new" id="btnNew">
+                                    <i class="fas fa-plus"></i>
+                                    Ảnh mới
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="error-section" id="errorSection" style="display: none;">
+                        <div class="error-content">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h4>Đã xảy ra lỗi</h4>
+                            <p id="errorMessage"></p>
+                            <button class="btn-retry" id="btnRetry">
+                                <i class="fas fa-redo"></i>
+                                Thử lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHỐI 2: UPLOAD TỪ URL -->
+                <div class="url-section">
+                    <h3 class="section-title">Upload ảnh từ URL</h3>
+                    <p class="section-description">Dán nhiều link (mỗi dòng một link). Hệ thống sẽ xử lý lần lượt theo đúng thứ tự bạn nhập.</p>
+                    
+                    <textarea id="urlsInput" rows="8" class="urls-input" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.png&#10;https://example.com/image3.webp"></textarea>
+                    
+                    <!-- Background Selection for URL -->
+                    <div class="background-selection" id="urlBackgroundSelection">
+                        <h4>Chọn ảnh nền:</h4>
+                        <div class="background-options" id="urlBackgroundOptions">
+                            <div class="background-option active" data-background="none">
+                                <div class="bg-preview transparent">
+                                    <i class="fas fa-ban"></i>
+                                </div>
+                                <span>Không nền</span>
+                            </div>
+                            <!-- Background options will be loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="url-controls">
+                        <button id="uploadUrlsBtn" class="btn-process-url">
+                            
+                            Xóa Watermark từ URL
+                        </button>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="urlProgressFill"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span id="urlProgressText">Sẵn sàng</span>
+                                <span id="urlProgressPercent">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="url-results" id="urlResults">
+                        <div class="results-header">
+                            <h4>Kết quả xử lý</h4>
+                            <button class="btn-clear-results" id="btnClearResults" title="Xóa tất cả kết quả">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="results-content" id="urlResultsContent">
+                            <p class="empty-state">Chưa có kết quả nào</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="header-actions">
+                <a href="background-manager.html" class="btn-manage-backgrounds" style="color: white;margin-bottom: 20px;">
+                    <i class="fas fa-cog"></i>
+                    Quản lý ảnh nền
+                </a>
+                <a href="csv-upload.html" class="btn-manage-backgrounds" style="color: white;margin-bottom: 20px;">
+                    <i class="fas fa-file-csv"></i>
+                    CSV Upload
+                </a>
+            </div>
+            <div class="footer-content">
+                <p>Powered by <a href="https://trumpany.com.vn" target="_blank">Trumpany Developer</a></p>
+                <i style="font-size: 12px;"><a href="https://www.remove.bg/vi/api" target="_blank">Remove.bg API</a> & <a href="https://www.digitalocean.com/" target="_blank">DigitalOcean</a></i>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

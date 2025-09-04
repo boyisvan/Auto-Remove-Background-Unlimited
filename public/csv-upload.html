@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload - Background Remover</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .csv-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .csv-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .csv-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .csv-header p {
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .csv-upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .csv-upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .csv-upload-area:hover {
+            border-color: #2980b9;
+            background: #e3f2fd;
+        }
+        
+        .csv-upload-area.dragover {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+        
+        .csv-upload-icon {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .csv-upload-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .csv-upload-hint {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .sample-download-section {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .btn-download-sample {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-download-sample:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .sample-hint {
+            color: #7f8c8d;
+            font-size: 12px;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+        
+        .csv-input {
+            display: none;
+        }
+        
+        .background-selection {
+            margin: 20px 0;
+        }
+        
+        .background-selection h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .background-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .background-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .background-option:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+        
+        .background-option.active {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+        
+        .bg-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .bg-preview.no-bg {
+            background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+        }
+        
+        .background-option span {
+            font-size: 12px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .csv-preview {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .csv-preview h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .csv-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .csv-table th,
+        .csv-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .csv-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .csv-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .csv-urls {
+            max-width: 300px;
+            word-break: break-all;
+            font-size: 12px;
+        }
+        
+        .csv-process-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .csv-process-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+        
+        .csv-process-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .csv-progress {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .csv-results {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .csv-results h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .download-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .success-message {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i>
+        Quay lại
+    </button>
+
+    <div class="csv-container">
+        <div class="csv-header">
+            <h1><i class="fas fa-file-csv"></i> CSV Upload</h1>
+            <p>Upload file CSV chứa danh sách URL ảnh để xử lý hàng loạt</p>
+        </div>
+
+        <div class="csv-upload-section">
+            <div class="csv-upload-area" onclick="document.getElementById('csvInput').click()">
+                <div class="csv-upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="csv-upload-text">Kéo thả file CSV vào đây hoặc click để chọn</div>
+                <div class="csv-upload-hint">Hỗ trợ file .csv với định dạng: Images, Processed Image</div>
+            </div>
+            <input type="file" id="csvInput" class="csv-input" accept=".csv" onchange="handleCSVUpload(event)">
+            
+            <div class="sample-download-section">
+                <button class="btn-download-sample" onclick="downloadSampleCSV()">
+                    <i class="fas fa-download"></i>
+                    Tải xuống CSV mẫu
+                </button>
+                <p class="sample-hint">Tải xuống file CSV mẫu để xem định dạng cần thiết</p>
+            </div>
+        </div>
+
+        <div class="background-selection">
+            <h3><i class="fas fa-image"></i> Chọn ảnh nền</h3>
+            <div class="background-options" id="backgroundOptions">
+                <div class="background-option active" data-background="none">
+                    <div class="bg-preview no-bg"></div>
+                    <span>Không nền</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="csv-preview" id="csvPreview">
+            <h3><i class="fas fa-eye"></i> Xem trước dữ liệu CSV</h3>
+            <table class="csv-table" id="csvTable">
+                <thead>
+                    <tr>
+                        <th>Images</th>
+                        <th>Processed Image</th>
+                    </tr>
+                </thead>
+                <tbody id="csvTableBody">
+                </tbody>
+            </table>
+            <button class="csv-process-btn" id="processBtn" onclick="processCSV()">
+                <i class="fas fa-magic"></i>
+                Xử lý CSV
+            </button>
+        </div>
+
+        <div class="csv-progress" id="csvProgress">
+            <h3><i class="fas fa-spinner fa-spin"></i> Đang xử lý...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
+        </div>
+
+        <div class="csv-results" id="csvResults">
+            <h3><i class="fas fa-check-circle"></i> Kết quả xử lý</h3>
+            <div class="download-section">
+                <button class="download-btn" id="downloadBtn" onclick="downloadResults()">
+                    <i class="fas fa-download"></i>
+                    Tải xuống CSV kết quả
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="csv-upload.js"></script>
+</body>
+</html>
